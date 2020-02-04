@@ -53,6 +53,14 @@ class App extends Component {
   }
 
   updatePizza=()=>{
+
+    let index = this.state.pizzaList.findIndex(el => el.id === pizza.id)
+      let tempArr = this.state.pizzaList
+      tempArr[index] = pizza
+      this.setState({
+        pizzaList: tempArr
+      })
+
     fetch(`http://localhost:3000/pizzas/${this.state.pizza.id}`, {
       method: 'PATCH',
       headers: {
@@ -62,14 +70,7 @@ class App extends Component {
       body: JSON.stringify(this.state.pizza)
     })
     .then(resp => resp.json())
-    .then(pizza => {
-      let index = this.state.pizzaList.findIndex(el => el.id === pizza.id)
-      let tempArr = this.state.pizzaList
-      tempArr[index] = pizza
-      this.setState({
-        pizzaList: tempArr
-      })
-    })
+    .then(pizza => {console.log(pizza)})
   }
 
   getPizza=(e)=>{
