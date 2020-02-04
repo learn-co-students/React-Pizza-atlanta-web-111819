@@ -2,37 +2,37 @@
   "pizzas": [
     {
       "id": 1,
-      "topping": "Plainest of the Plain",
+      "topping": "Plain 🥱",
       "size": "Small",
       "vegetarian": true
     },
     {
       "id": 2,
-      "topping": "Pepperoni",
-      "size": "Small",
+      "topping": "Pepperoni 🍕",
+      "size": "Medium",
       "vegetarian": false
     },
     {
       "id": 3,
-      "topping": "Mushroom",
+      "topping": "Mushroom 🍄",
       "size": "Small",
       "vegetarian": true
     },
     {
       "id": 4,
-      "topping": "Sausage",
+      "topping": "Sausage 🍖",
       "size": "Small",
       "vegetarian": false
     },
     {
       "id": 5,
-      "topping": "Bacon",
-      "size": "Medium",
+      "topping": "Bacon 🥓",
+      "size": "Large",
       "vegetarian": false
     },
     {
       "id": 6,
-      "topping": "Spinach",
+      "topping": "Spinach 🥬",
       "size": "Medium",
       "vegetarian": true
     },
@@ -56,7 +56,7 @@
     },
     {
       "id": 10,
-      "topping": "Chicken",
+      "topping": "Chicken 🍗",
       "size": "Large",
       "vegetarian": true
     }

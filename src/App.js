@@ -6,70 +6,52 @@ class App extends Component {
 
   state = {
     pizzas: [],
-    currentPizza: {}
+    selectedPizza: {}
   }
 
   componentDidMount() {
-    fetch('http://localhost:3000/pizzas')
-    .then(res => res.json())
-    .then(pizzas => this.setState({pizzas: pizzas}))
+    fetch('http://localhost:3000/pizzas').then(res => res.json()).then(pizzas => this.setState({pizzas: pizzas}))
   }
 
-  editPizza = (pizza) => {
-    this.setState({currentPizza: pizza})
+  updateSelectedPizza = (attr, value) => {
+    console.log('updating', attr, 'to', value)
+    const newPizza = {...this.state.selectedPizza}
+    if (attr === 'vegetarian')
+      newPizza[attr] = value === 'Vegetarian'
+    else
+      newPizza[attr] = value
+    this.setState({selectedPizza: newPizza})
   }
 
-  onPizzaSizeChanged = e => {
-    let newPizza = {...this.state.currentPizza}
-    newPizza.size = e.target.value
-    this.setState({currentPizza: newPizza})
+  handleEditClicked = pizza => {
+    this.setState({selectedPizza: pizza})
   }
 
-  onIsVegetarianChanged = e => {
-    let newPizza = {...this.state.currentPizza}
-    if (e.target.value[0] === 'V') {
-      newPizza.vegetarian = true
-    } else {
-      newPizza.vegetarian = false
-    }
-
-    this.setState({currentPizza: newPizza})
+  updatePizzaInList = pizza => {
+    const pizzas = [...this.state.pizzas]
+    let index = pizzas.findIndex(p => p.id === pizza.id)
+    pizzas[index] = pizza
+    this.setState({pizzas: pizzas})
   }
 
-  onToppingChanged = e => {
-    let newPizza = {...this.state.currentPizza}
-    newPizza.topping = e.target.value
-    this.setState({currentPizza: newPizza})
-  }
+  savePizza = () => {
+    const {id} = this.state.selectedPizza
 
-  onSubmitButtonClicked = e => {
-    if (this.state.currentPizza.id) {
-      const {id, topping, size, vegetarian} = this.state.currentPizza
-      fetch(`http://localhost:3000/pizzas/${id}`,{
+    if (id) {
+      fetch(`http://localhost:3000/pizzas/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json'
         },
-        body: JSON.stringify({topping: topping, size: size, vegetarian: vegetarian})
-      }).then(res => res.json()).then(editedPizza => {
-        const idx = this.state.pizzas.findIndex(p => p.id === editedPizza.id)
-        const newPizzaList = [...this.state.pizzas]
-        newPizzaList[idx] = editedPizza
-        this.setState({pizzas: newPizzaList})
+        body: JSON.stringify({...this.state.selectedPizza})
+      }).then(res => res.json()).then(pizza => {
+          console.log(pizza)
+          if (pizza.id) { 
+            this.setState({selectedPizza: {topping: '', size: 'Small', vegetarian: true}})
+          }
       })
-    } else {
-      fetch('http://localhost:3000/pizzas', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        body: JSON.stringify({...this.state.currentPizza})
-      }).then(res => res.json()).then(newPizza => {
-        const newPizzaList = [...this.state.pizzas, newPizza]
-        this.setState({pizzas: newPizzaList})
-      })
+      this.updatePizzaInList(this.state.selectedPizza)
     }
   }
 
@@ -77,14 +59,8 @@ class App extends Component {
     return (
       <Fragment>
         <Header/>
-        <PizzaForm 
-          pizza={this.state.currentPizza} 
-          onPizzaSizeChanged={this.onPizzaSizeChanged}
-          onIsVegetarianChanged={this.onIsVegetarianChanged}
-          onToppingChanged={this.onToppingChanged}
-          onSubmitButtonClicked={this.onSubmitButtonClicked}
-        />
-        <PizzaList pizzas={this.state.pizzas} handleEditPizza={this.editPizza} />
+        <PizzaForm pizza={this.state.selectedPizza} updateSelectedPizza={this.updateSelectedPizza} updatePizza={this.savePizza}/>
+        <PizzaList pizzas={this.state.pizzas} handleEditClicked={this.handleEditClicked}/>
       </Fragment>
     );
   }
